@@ -27,10 +27,12 @@ const BR_TAG_REGEX = /^<br \/>|<br \/>$/g,
   technologies = ["vue", "tailwindcss", "comark"];
 const init = () => ({ deco, message });
 
-export const copilotPluginCtx = createSlice({ apiKey: "", filename: "" }, name);
+export const apiKeySlice = createSlice("", "apiKey"),
+  filenameSlice = createSlice("", "filename");
 export const copilotPlugin = [
   (ctx: Ctx) => {
-    ctx.inject(copilotPluginCtx);
+    ctx.inject(apiKeySlice);
+    ctx.inject(filenameSlice);
     return () => undefined;
   },
   $prose((ctx) => {
@@ -38,7 +40,8 @@ export const copilotPlugin = [
       localApiKey = "";
 
     const getHint = debounce(async (view: EditorView) => {
-      const { apiKey, filename } = ctx.get(copilotPluginCtx);
+      const apiKey = ctx.get(apiKeySlice),
+        filename = ctx.get(filenameSlice);
       if (localApiKey !== apiKey) {
         localApiKey = apiKey;
         copilot = localApiKey
