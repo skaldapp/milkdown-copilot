@@ -112,11 +112,12 @@ export const copilotPlugin = [
           } else {
             if (event.key === "Enter" || event.key.length === 1) getHint(view);
             else getHint.cancel();
+            return undefined;
           }
         },
       },
       state: {
-        apply(tr, value, prevState, { doc, schema }) {
+        apply(tr, value, _prevState, { doc, schema }) {
           const message = tr.getMeta(key),
             { content } = ctx.get(parserCtx)(message),
             {
