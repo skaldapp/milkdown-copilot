@@ -1,0 +1,57 @@
+{
+  "$schema": "https://www.schemastore.org/package",
+  "name": "@skaldapp/milkdown-copilot",
+  "version": "0.0.1",
+  "description": "A Vue 3 composable that transforms JSON tree objects into flat arrays for easy manipulation with standard array operations while maintaining tree structure through computed properties",
+  "keywords": [
+    "vue",
+    "vue3",
+    "composable",
+    "json",
+    "tree",
+    "flat",
+    "array",
+    "manipulation",
+    "reactive",
+    "data-structures",
+    "hierarchy",
+    "nested",
+    "traversal",
+    "navigation"
+  ],
+  "homepage": "https://github.com/skaldapp/milkdown-copilot#readme",
+  "bugs": {
+    "url": "https://github.com/skaldapp/milkdown-copilot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skaldapp/milkdown-copilot.git"
+  },
+  "license": "AGPL-3.0-only",
+  "author": "Jerry Bruwes <jbruwes@gmail.com> (https://jbruwes.github.io)",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint ."
+  },
+  "prettier": "@skaldapp/configs/prettierrc",
+  "dependencies": {
+    "@milkdown/ctx": "^7.19.2",
+    "@milkdown/kit": "^7.19.2",
+    "monacopilot": "^1.2.12",
+    "quasar": "^2.19.1"
+  },
+  "devDependencies": {
+    "@skaldapp/configs": "^1.2.78",
+    "@types/node": "^25.5.0",
+    "eslint": "^10.1.0"
+  }
+}
