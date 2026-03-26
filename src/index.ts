@@ -40,67 +40,66 @@ export const copilotPlugin = [
       localApiKey = "";
 
     const getHint = debounce(async (view: EditorView) => {
-        const apiKey = ctx.get(apiKeySlice),
-          filename = ctx.get(filenameSlice);
-        if (localApiKey !== apiKey) {
-          localApiKey = apiKey;
-          copilot = localApiKey
-            ? new CompletionCopilot(localApiKey, { model, provider })
-            : undefined;
-        }
-        if (copilot && filename) {
-          const {
-              dispatch,
-              state: {
-                schema: { topNodeType },
-                tr: {
-                  doc,
-                  selection: { from },
-                },
+      const apiKey = ctx.get(apiKeySlice),
+        filename = ctx.get(filenameSlice);
+      if (localApiKey !== apiKey) {
+        localApiKey = apiKey;
+        copilot = localApiKey
+          ? new CompletionCopilot(localApiKey, { model, provider })
+          : undefined;
+      }
+      if (copilot && filename) {
+        const {
+            dispatch,
+            state: {
+              schema: { topNodeType },
+              tr: {
+                doc,
+                selection: { from },
               },
-            } = view,
-            { content: after } = doc.slice(from),
-            textAfterCursor = ctx
-              .get(serializerCtx)(
-                topNodeType.createAndFill(undefined, after) ??
-                  topNodeType.create(undefined, after),
-              )
-              .replace(BR_TAG_REGEX, ""),
-            { content: before } = doc.slice(0, from),
-            textBeforeCursor = ctx
-              .get(serializerCtx)(
-                topNodeType.createAndFill(undefined, before) ??
-                  topNodeType.create(undefined, before),
-              )
-              .replace(BR_TAG_REGEX, "")
-              .trim(),
-            completionMetadata = {
-              cursorPosition,
-              filename,
-              language,
-              relatedFiles,
-              technologies,
-              textAfterCursor,
-              textBeforeCursor,
             },
-            body = { completionMetadata },
-            { completion } = await copilot.complete({ body });
+          } = view,
+          { content: after } = doc.slice(from),
+          textAfterCursor = ctx
+            .get(serializerCtx)(
+              topNodeType.createAndFill(undefined, after) ??
+                topNodeType.create(undefined, after),
+            )
+            .replace(BR_TAG_REGEX, ""),
+          { content: before } = doc.slice(0, from),
+          textBeforeCursor = ctx
+            .get(serializerCtx)(
+              topNodeType.createAndFill(undefined, before) ??
+                topNodeType.create(undefined, before),
+            )
+            .replace(BR_TAG_REGEX, "")
+            .trim(),
+          completionMetadata = {
+            cursorPosition,
+            filename,
+            language,
+            relatedFiles,
+            technologies,
+            textAfterCursor,
+            textBeforeCursor,
+          },
+          body = { completionMetadata },
+          { completion } = await copilot.complete({ body });
 
-          if (completion?.replace(BR_TAG_REGEX, "").trim())
-            dispatch(cloneTr(view.state.tr).setMeta(key, completion));
-        }
-      }, second),
-      mousedown = () => {
-        getHint.cancel();
-        return false;
-      },
-      handleDOMEvents = { mousedown };
+        if (completion?.replace(BR_TAG_REGEX, "").trim())
+          dispatch(cloneTr(view.state.tr).setMeta(key, completion));
+      }
+    }, second);
 
     return new Plugin({
       key,
       props: {
         decorations: (state) => key.getState(state).deco,
-        handleDOMEvents,
+        handleDOMEvents: {
+          mousedown: ({ dispatch, state: { tr } }) => {
+            dispatch(tr.setMeta(key, ""));
+          },
+        },
         handleKeyDown(view, event) {
           const { dispatch, state } = view,
             { message } = key.getState(state),
