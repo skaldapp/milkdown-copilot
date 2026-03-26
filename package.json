@@ -40,7 +40,7 @@
     "@milkdown/ctx": "^7.19.2",
     "@milkdown/kit": "^7.19.2",
     "monacopilot": "^1.2.12",
-    "quasar": "^2.19.1"
+    "quasar": "^2.19.2"
   },
   "devDependencies": {
     "@skaldapp/configs": "^1.2.79",
