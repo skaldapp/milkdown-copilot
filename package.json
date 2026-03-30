@@ -37,8 +37,8 @@
   },
   "prettier": "@skaldapp/configs/prettierrc",
   "dependencies": {
-    "@milkdown/ctx": "^7.19.2",
-    "@milkdown/kit": "^7.19.2",
+    "@milkdown/ctx": "^7.20.0",
+    "@milkdown/kit": "^7.20.0",
     "monacopilot": "^1.2.12",
     "quasar": "^2.19.2"
   },
