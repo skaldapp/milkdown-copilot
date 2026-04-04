@@ -43,8 +43,8 @@
     "quasar": "^2.19.2"
   },
   "devDependencies": {
-    "@skaldapp/configs": "^1.2.83",
-    "@types/node": "^25.5.0",
-    "eslint": "^10.1.0"
+    "@skaldapp/configs": "^1.2.84",
+    "@types/node": "^25.5.2",
+    "eslint": "^10.2.0"
   }
 }
