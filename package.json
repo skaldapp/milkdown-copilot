@@ -32,7 +32,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "eslint ."
   },
   "prettier": "@skaldapp/configs/prettierrc",
@@ -40,10 +40,10 @@
     "@milkdown/ctx": "^7.20.0",
     "@milkdown/kit": "^7.20.0",
     "monacopilot": "^1.2.12",
-    "quasar": "^2.19.2"
+    "quasar": "^2.19.3"
   },
   "devDependencies": {
-    "@skaldapp/configs": "^1.2.84",
+    "@skaldapp/configs": "^1.2.91",
     "@types/node": "^25.5.2",
     "eslint": "^10.2.0"
   }
