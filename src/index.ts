@@ -8,6 +8,13 @@ import { DOMParser, DOMSerializer } from "@milkdown/kit/prose/model";
 import { Plugin, PluginKey } from "@milkdown/kit/prose/state";
 import { Decoration, DecorationSet } from "@milkdown/kit/prose/view";
 import { $prose } from "@milkdown/kit/utils";
+import {
+  DEFAULT_COPILOT_MAX_TOKENS as max_tokens,
+  DEFAULT_COPILOT_STOP_SEQUENCE as stop,
+  DEFAULT_COPILOT_STREAM as stream,
+  DEFAULT_COPILOT_TEMPERATURE as temperature,
+  DEFAULT_COPILOT_TOP_P as top_p,
+} from "@monacopilot/core";
 import { CompletionCopilot } from "monacopilot";
 import { debounce } from "quasar";
 
@@ -20,33 +27,93 @@ const BR_TAG_REGEX = /^<br \/>|<br \/>$/g,
   key = new PluginKey(name),
   language = "markdown",
   message = "",
-  model = "codestral",
-  provider = "mistral",
+  method = "POST",
   relatedFiles = undefined,
   second = 1000,
   technologies = ["vue", "tailwindcss", "comark"];
 const init = () => ({ deco, message });
 
 export const apiKeySlice = createSlice("", "apiKey"),
-  filenameSlice = createSlice("", "filename");
+  baseURLSlice = createSlice("", "baseURL"),
+  endpointSlice = createSlice("", "endpoint"),
+  filenameSlice = createSlice("", "filename"),
+  modelSlice = createSlice("", "model");
 export const copilotPlugin = [
   (ctx: Ctx) => {
     ctx.inject(apiKeySlice);
     ctx.inject(filenameSlice);
+    ctx.inject(modelSlice);
+    ctx.inject(baseURLSlice);
+    ctx.inject(endpointSlice);
     return () => undefined;
   },
   $prose((ctx) => {
     let copilot: CompletionCopilot | undefined,
-      localApiKey = "";
+      localApiKey = "",
+      localBaseURL = "",
+      localEndpoint = "",
+      localModel = "";
 
     const getHint = debounce(async (view: EditorView) => {
       const apiKey = ctx.get(apiKeySlice),
-        filename = ctx.get(filenameSlice);
-      if (localApiKey !== apiKey) {
+        baseURL = ctx.get(baseURLSlice),
+        endpoint = ctx.get(endpointSlice),
+        filename = ctx.get(filenameSlice),
+        model = ctx.get(modelSlice);
+      if (
+        localApiKey !== apiKey ||
+        localBaseURL !== baseURL ||
+        localEndpoint !== endpoint ||
+        localModel !== model
+      ) {
         localApiKey = apiKey;
-        copilot = localApiKey
-          ? new CompletionCopilot(localApiKey, { model, provider })
-          : undefined;
+        localBaseURL = baseURL;
+        localEndpoint = endpoint;
+        localModel = model;
+        copilot =
+          apiKey && baseURL && model
+            ? new CompletionCopilot(undefined, {
+                model: async ({ context, fileContent, instruction }) => {
+                  const [prefix = "", suffix = ""] = fileContent.split(
+                      "<|developer_cursor_is_here|>",
+                    ),
+                    Authorization = `Bearer ${apiKey}`,
+                    prompt = `${context}\n${instruction}\n${prefix}`;
+                  let text = null;
+                  try {
+                    const {
+                      choices: [
+                        {
+                          message: { content },
+                        },
+                      ],
+                    } = await (
+                      await fetch(`${baseURL}/${endpoint || "completions"}`, {
+                        body: JSON.stringify({
+                          max_tokens,
+                          model,
+                          prompt,
+                          stop,
+                          stream,
+                          ...(endpoint && { suffix }),
+                          temperature,
+                          top_p,
+                        }),
+                        headers: {
+                          Authorization,
+                          "Content-Type": "application/json",
+                        },
+                        method,
+                      })
+                    ).json();
+                    text = content;
+                  } catch (err) {
+                    console.log(err);
+                  }
+                  return { text };
+                },
+              })
+            : undefined;
       }
       if (copilot && filename) {
         const {
