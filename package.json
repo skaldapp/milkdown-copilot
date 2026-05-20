@@ -39,12 +39,13 @@
   "dependencies": {
     "@milkdown/ctx": "^7.21.1",
     "@milkdown/kit": "^7.21.1",
+    "@monacopilot/core": "^1.2.12",
     "monacopilot": "^1.2.12",
     "quasar": "^2.19.3"
   },
   "devDependencies": {
-    "@skaldapp/configs": "^1.2.108",
-    "@types/node": "^25.9.0",
+    "@skaldapp/configs": "^1.2.109",
+    "@types/node": "^25.9.1",
     "eslint": "^10.4.0"
   }
 }
