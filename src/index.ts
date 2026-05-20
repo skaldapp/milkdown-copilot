@@ -1,5 +1,6 @@
 import type { Ctx } from "@milkdown/kit/ctx";
 import type { EditorView } from "@milkdown/kit/prose/view";
+import type { TOpenAI } from "@skaldapp/shared";
 
 import { createSlice } from "@milkdown/ctx";
 import { parserCtx, serializerCtx } from "@milkdown/kit/core";
@@ -35,6 +36,55 @@ const init = () => ({ deco, message });
 
 export const apiKeySlice = createSlice("", "apiKey"),
   baseURLSlice = createSlice("", "baseURL"),
+  createCompletionCopilot = ({
+    apiKey,
+    baseURL,
+    endpoint,
+    model,
+  }: {
+    [K in keyof TOpenAI]: NonNullable<TOpenAI[K]>;
+  }) =>
+    new CompletionCopilot(undefined, {
+      model: async ({ context, fileContent, instruction }) => {
+        const [prefix = "", suffix = ""] = fileContent.split(
+            "<|developer_cursor_is_here|>",
+          ),
+          Authorization = `Bearer ${apiKey}`,
+          prompt = `${context}\n${instruction}\n${prefix}`;
+        let text = null;
+        try {
+          const {
+            choices: [
+              {
+                message: { content },
+              },
+            ],
+          } = await (
+            await fetch(`${baseURL}/${endpoint || "completions"}`, {
+              body: JSON.stringify({
+                max_tokens,
+                model,
+                prompt,
+                stop,
+                stream,
+                ...(endpoint && { suffix }),
+                temperature,
+                top_p,
+              }),
+              headers: {
+                Authorization,
+                "Content-Type": "application/json",
+              },
+              method,
+            })
+          ).json();
+          text = content;
+        } catch (err) {
+          console.log(err);
+        }
+        return { text };
+      },
+    }),
   endpointSlice = createSlice("", "endpoint"),
   filenameSlice = createSlice("", "filename"),
   modelSlice = createSlice("", "model");
@@ -72,47 +122,7 @@ export const copilotPlugin = [
         localModel = model;
         copilot =
           apiKey && baseURL && model
-            ? new CompletionCopilot(undefined, {
-                model: async ({ context, fileContent, instruction }) => {
-                  const [prefix = "", suffix = ""] = fileContent.split(
-                      "<|developer_cursor_is_here|>",
-                    ),
-                    Authorization = `Bearer ${apiKey}`,
-                    prompt = `${context}\n${instruction}\n${prefix}`;
-                  let text = null;
-                  try {
-                    const {
-                      choices: [
-                        {
-                          message: { content },
-                        },
-                      ],
-                    } = await (
-                      await fetch(`${baseURL}/${endpoint || "completions"}`, {
-                        body: JSON.stringify({
-                          max_tokens,
-                          model,
-                          prompt,
-                          stop,
-                          stream,
-                          ...(endpoint && { suffix }),
-                          temperature,
-                          top_p,
-                        }),
-                        headers: {
-                          Authorization,
-                          "Content-Type": "application/json",
-                        },
-                        method,
-                      })
-                    ).json();
-                    text = content;
-                  } catch (err) {
-                    console.log(err);
-                  }
-                  return { text };
-                },
-              })
+            ? createCompletionCopilot({ apiKey, baseURL, endpoint, model })
             : undefined;
       }
       if (copilot && filename) {
