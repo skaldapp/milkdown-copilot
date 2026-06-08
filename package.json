@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@skaldapp/configs": "^1.4.3",
-    "@skaldapp/shared": "^1.2.85",
+    "@skaldapp/shared": "^1.2.86",
     "@types/node": "^25.9.2",
     "eslint": "^10.4.1"
   }
