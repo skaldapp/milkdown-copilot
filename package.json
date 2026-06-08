@@ -37,16 +37,16 @@
   },
   "prettier": "@skaldapp/configs/prettierrc",
   "dependencies": {
-    "@milkdown/ctx": "^7.21.1",
-    "@milkdown/kit": "^7.21.1",
+    "@milkdown/ctx": "^7.21.2",
+    "@milkdown/kit": "^7.21.2",
     "@monacopilot/core": "^1.2.12",
     "monacopilot": "^1.2.12",
     "quasar": "^2.19.3"
   },
   "devDependencies": {
-    "@skaldapp/configs": "^1.4.0",
-    "@skaldapp/shared": "^1.2.84",
-    "@types/node": "^25.9.1",
+    "@skaldapp/configs": "^1.4.3",
+    "@skaldapp/shared": "^1.2.85",
+    "@types/node": "^25.9.2",
     "eslint": "^10.4.1"
   }
 }
