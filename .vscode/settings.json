@@ -3,5 +3,9 @@
   "editor.codeActionsOnSave": ["source.fixAll.eslint"],
   "eslint.validate": ["typescript", "vue", "json"],
   "js/ts.tsdk.path": "node_modules/typescript/lib",
-  "cSpell.words": ["Bruwes", "milkdown", "monacopilot", "skaldapp"]
+  "cSpell.words": ["Bruwes", "milkdown", "monacopilot", "skaldapp"],
+  "Codegeex.CommitMessage.LanguagePreference": "English",
+  "Codegeex.Comment.LanguagePreference": "English",
+  "Codegeex.Chat.LanguagePreference": "English",
+  "Codegeex.SidebarUI.LanguagePreference": "English"
 }
