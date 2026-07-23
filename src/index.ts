@@ -231,6 +231,11 @@ export const copilotPlugin = [
         },
         init,
       },
+      view: () => ({
+        destroy() {
+          getHint.cancel();
+        },
+      }),
     });
   }),
 ];
