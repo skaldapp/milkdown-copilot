@@ -95,6 +95,8 @@ export const copilotPlugin = [
     ctx.inject(modelSlice);
     ctx.inject(baseURLSlice);
     ctx.inject(endpointSlice);
+    ctx.inject(parserCtx);
+    ctx.inject(serializerCtx);
     return () => undefined;
   },
   $prose((ctx) => {
