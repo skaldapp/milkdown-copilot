@@ -41,11 +41,11 @@
     "@milkdown/kit": "^7.21.3",
     "@monacopilot/core": "^1.2.12",
     "monacopilot": "^1.2.12",
-    "quasar": "^2.23.3"
+    "quasar": "^2.23.4"
   },
   "devDependencies": {
-    "@skaldapp/configs": "^1.4.12",
-    "@skaldapp/shared": "^1.3.8",
+    "@skaldapp/configs": "^1.4.13",
+    "@skaldapp/shared": "^1.3.9",
     "@types/node": "^26.1.2",
     "eslint": "^10.8.0"
   }
